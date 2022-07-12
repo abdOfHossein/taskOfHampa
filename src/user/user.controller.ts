@@ -1,89 +1,86 @@
-import { Body, Controller, Get, Post, Param, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Res,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './createUserDto';
 import { User } from './user.entity';
 import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
 
-interface IUser {
-  id: number;
-  firstName: string;
-  lastName: string;
-  phoneNumber: number;
-}
-interface IUserInfo {
-  firstName: string;
-  lastName: string;
-  phoneNumber: number;
-}
-interface IId {
-  id: number;
-}
-interface IReqBodyUpdateUSer {
-  id: number;
-  info: IUserInfo;
-}
-interface IUsers {
-  data: Array<IUserInfo>;
-}
-
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('all')
-  async findAll(@Res() res: Response): Promise<User[] | object> {
+  //creat user
+  @Post()
+  async addUser(@Body() userInfo: CreateUserDto): Promise<object> {
     try {
-      const result = await this.userService.findAll();
-      if (result.length === 0) {
-        return res.status(200).json({ msg: 'there is not any user...!' });
-      }
+      const result = await this.userService.addUser(userInfo);
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-  //   async findOne(id: string): Promise<IUserInfo | object> {
-  //     try {
-  //       console.log(`param in postqrSql service is===>${id}`);
-  //       console.log(id['id']);
-  //       const result = await this.userService.findOne(id['id']);
-  //       console.log(result);
+  //readl all user
+  @Get('all')
+  async findAll(@Res() res: Response): Promise<User[] | object> {
+    try {
+      console.log('hello');
 
-  //       return result;
-  //     } catch (error) {
-  //       console.log(`err of findOne in api-gateway controller:${error}`);
-  //     }
-  //   }
+      const result = await this.userService.findAll();
+      console.log(result);
 
-  //   async addUser(userInfo: CreatUserDto): Promise<object> {
-  //     try {
-  //       console.log(`userInfo addUser postqrSql:${userInfo}`);
+      if (result.length === 0) {
+        return res.status(200).json({ msg: 'there is not any user...!' });
+      }
+      res.json(result);
+      return;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  //       return this.userService.addUser(userInfo);
-  //     } catch (error) {
-  //       console.log(`err of findOne in api-gateway controller:${error}`);
-  //     }
-  //   }
+  //read one user
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<User | object> {
+    try {
+      const result = await this.userService.findOne(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 
-  //   async updateUser(reqBodyUpdateUSer: IReqBodyUpdateUSer): Promise<object> {
-  //     try {
-  //       console.log(reqBodyUpdateUSer);
-  //       console.log(JSON.stringify(reqBodyUpdateUSer));
-
-  //       return this.userService.updateUser(reqBodyUpdateUSer);
-  //     } catch (error) {
-  //       console.log(`err of findOne in api-gateway controller:${error}`);
-  //     }
-  //   }
-
-  //   async deleteUser(id: number): Promise<object> {
-  //     try {
-  //       return this.userService.deleteUser(id);
-  //     } catch (error) {
-  //       console.log(
-  //         `err of deleteUser in controller in postgrSqlService:${error}`,
-  //       );
-  //     }
-  //   }
+  //update user
+  @Put(':id')
+  async updateUser(
+    @Body() newInfo: CreateUserDto,
+    @Param('id') id: string,
+  ): Promise<object> {
+    try {
+      const result = await this.userService.updateUser(newInfo, id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+  //delete user
+  @Delete(':id')
+  async deleteUser(@Param('id') id: string): Promise<object> {
+    try {
+      const result = await this.userService.deleteUser(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
