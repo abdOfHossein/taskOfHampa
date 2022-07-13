@@ -6,6 +6,8 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle('Task Of Hampa')
     .setDescription('Login Register and Crud With Nest.js and Postgresql')
     .addTag('user')
+    .addTag('loginAndRegisterUser')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
