@@ -22,7 +22,7 @@ const secret = process.env.JWT_SECRET_KEY;
     TypeOrmModule.forFeature([User]),
     UserModule
   ],
-  providers: [JwtStrategy,AuthService, LocalStrategy],
-  exports: [AuthService],
+  providers: [AuthService, LocalStrategy,JwtStrategy],
+  exports: [AuthService]
 })
 export class AuthModule {}

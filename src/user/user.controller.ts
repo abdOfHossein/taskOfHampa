@@ -34,13 +34,11 @@ export class UserController {
   @Get('all')
   async findAll(@Res() res: Response): Promise<User[] | object> {
     try {
-      console.log('hello');
-
       const result = await this.userService.findAll();
       console.log(result);
 
       if (result.length === 0) {
-        return res.status(200).json({ msg: 'there is not any user...!' });
+        return res.json({ msg: 'there is not any user...!' });
       }
       res.json(result);
       return;

@@ -6,18 +6,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { UserService } from './user/user.service';
 import { User } from './user/user.entity';
-
+import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from './auth/auth.module';
-
+import { JwtModule } from '@nestjs/jwt';
+import { ProfileModule } from './profile/profile.module';
 
 const config = require('dotenv').config(join(__dirname, '../.env'));
 const port = Number(process.env.DB_PORT);
 const username = process.env.DB_USERNAME;
 const password = process.env.DB_PASSWORD;
+const secret = process.env.JWT_SECRET_KEY;
 
 @Module({
   imports: [
+    AuthModule,
+    PassportModule.register({defaultStrategy: 'jwt'}),
+    JwtModule.register({
+      secret,
+      signOptions: { expiresIn: '60s' },
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -31,9 +39,10 @@ const password = process.env.DB_PASSWORD;
     }),
     TypeOrmModule.forFeature([User]),
     UserModule,
-    AuthModule,
+    ProfileModule,
+
   ],
   controllers: [AppController],
-  providers: [AppService,]
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

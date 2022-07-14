@@ -2,6 +2,7 @@ import {  IsNotEmpty, IsPhoneNumber, Matches, MaxLength, MinLength } from 'class
 
 export class CreateUserDto {
 
+  @IsNotEmpty()
   @MinLength(3)
   @MaxLength(12)
   userName: string;
