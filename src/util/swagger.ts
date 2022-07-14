@@ -7,7 +7,14 @@ export function setupSwagger(app: INestApplication): void {
     .setDescription('Login Register and Crud With Nest.js and Postgresql')
     .addTag('user')
     .addTag('loginAndRegisterUser')
-    .addBearerAuth()
+    .addBearerAuth(
+      // {
+      //   type: 'http',
+      //   scheme: 'bearer',
+      //   bearerFormat: 'Token',
+      // },
+      // 'access_token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

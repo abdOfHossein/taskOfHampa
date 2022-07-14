@@ -6,8 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { UserService } from './user/user.service';
 import { User } from './user/user.entity';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './jwt.constant';
+
+import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './auth/auth.module';
+
 
 const config = require('dotenv').config(join(__dirname, '../.env'));
 const port = Number(process.env.DB_PORT);
@@ -29,12 +31,9 @@ const password = process.env.DB_PASSWORD;
     }),
     TypeOrmModule.forFeature([User]),
     UserModule,
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    }),
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,]
 })
 export class AppModule {}

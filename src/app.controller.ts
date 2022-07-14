@@ -1,14 +1,36 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  Put,
+  Request,
+} from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { CreateUserDto } from './user/createUserDto';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './local-auth.guard';
+
+import { AuthGuard } from '@nestjs/passport';
+import { User } from './user/user.entity';
+import { LocalAuthGuard } from './auth/local-auth.guard';
+import { userInfo } from 'os';
+import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+
+class LoginInfoDto {
+  userName: string;
+  password: string;
+}
 
 @ApiTags('loginAndRegisterUser')
 @Controller()
 export class AppController {
-  constructor(private appService: AppService) {}
+  constructor(
+    private appService: AppService,
+    private authService: AuthService,
+  ) {}
 
   @Post('register')
   async register(@Body() userInfo: CreateUserDto): Promise<object> {
@@ -19,15 +41,21 @@ export class AppController {
       throw error;
     }
   }
-  
-  @UseGuards(JwtAuthGuard)
+
+  @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Body() loginInfo: any): Promise<object> {
+  async login(@Body() userInfo: LoginInfoDto, @Request() req): Promise<object> {
     try {
-      const result = await this.appService.login(loginInfo);
-      return result;
+      return this.authService.login(req.user);
     } catch (error) {
       throw error;
     }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('user-info')
+  getUserInfo(@Request() req: any) {
+    return req.user;
   }
 }

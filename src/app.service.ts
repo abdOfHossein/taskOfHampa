@@ -3,14 +3,19 @@ import { User } from './user/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './user/createUserDto';
-import { JwtService } from '@nestjs/jwt';
 
-@Injectable()
+
+class LoginInfoDto {
+  userName: string;
+  password: string;
+}
+
+@Injectable() 
 export class AppService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwtService: JwtService,
+
   ) {}
 
   async register(userInfo: CreateUserDto) {
@@ -24,12 +29,9 @@ export class AppService {
       }
 
       const user = await this.userRepository.save(userInfo);
-
       if (user) {
-        const payload = { userName: user.userName, sub: user.id };
         return {
           msg: 'user created successfully',
-          access_token: this.jwtService.sign(payload),
         };
       }
     } catch (error) {
@@ -37,15 +39,38 @@ export class AppService {
     }
   }
 
-  async login(loginInfo: any): Promise<any> {
-    const user = await this.userRepository.findOne({
-      where: { userName: loginInfo.userName },
-    });
+  // async login(loginInfo: LoginInfoDto): Promise<any> {
+  //   try {
+  //     const user = await this.userRepository.findOne({
+  //       where: { userName: loginInfo.userName },
+  //     });
 
-    if (user && user.password === loginInfo.password) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
-  }
+  //     if (user && user.password === loginInfo.password) {
+  //       const payload = { userName: user.userName, sub: user.password };
+
+  //       return {
+  //         access_token: this.jwtService.sign(payload),
+  //       };
+  //     }
+
+  //     return { msg: 'userName or password is wrong!!!' };
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
+
+  // async validateUser(userName: string, pass: string): Promise<any> {
+  //   try {
+  //     const user = await this.userRepository.findOne({
+  //       where: { userName },
+  //     });
+
+  //     if (user && user.password === pass) {
+  //       return user;
+  //     }
+  //     return null;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
