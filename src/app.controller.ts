@@ -11,17 +11,11 @@ import {
 import { ApiTags, ApiBearerAuth, ApiProperty, ApiBody } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { CreateUserDto } from './user/createUserDto';
-
-import { AuthGuard } from '@nestjs/passport';
-import { User } from './user/user.entity';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import{LoginInfoDto} from './loginInfo.dto'
 
-class LoginInfoDto {
-  userName: string;
-  password: string;
-}
+
 
 @ApiTags('loginAndRegisterUser')
 @Controller()
@@ -40,6 +34,8 @@ export class AppController {
       throw error;
     }
   }
+
+  
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() userInfo: LoginInfoDto, @Request() req): Promise<object> {

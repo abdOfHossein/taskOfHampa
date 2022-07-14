@@ -19,10 +19,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(userName: string, password: string): Promise<any> {
     try {
       const user: any = await this.userRepository.findOne({
-        where: { userName: username },
+        where: { userName },
       });
       console.log(user);
 

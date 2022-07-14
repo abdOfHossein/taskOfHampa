@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
   UseGuards,
@@ -50,17 +50,36 @@ export class ProfileController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Book | object> {
+    try {
+      const result = await this.profileService.findOne(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: CreatBookDto) {
-    return this.profileService.update(+id, updateProfileDto);
+
+  @Put(':id')
+  async updateBook(
+    @Body() newInfo: CreatBookDto,
+    @Param('id') id: string,
+  ): Promise<object> {
+    try {
+      const result = await this.profileService.updateBook(newInfo, id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(+id);
+  async deleteUser(@Param('id') id: string): Promise<object> {
+    try {
+      const result = await this.profileService.deleteBook(id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 }

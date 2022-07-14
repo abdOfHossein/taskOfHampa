@@ -22,13 +22,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   ): Promise<any> {
     try {
 
-      console.log('i had something here....');
-      
+     
       const contextId = ContextIdFactory.getByRequest(request);
       const authService = await this.moduleRef.resolve(AuthService, contextId);
-
-      console.log(`username and password is ${username},${password}`);
-
       const user = await authService.validateUser(username, password);
 
       if (!user) {
