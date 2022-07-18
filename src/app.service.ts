@@ -39,38 +39,4 @@ export class AppService {
     }
   }
 
-  // async login(loginInfo: LoginInfoDto): Promise<any> {
-  //   try {
-  //     const user = await this.userRepository.findOne({
-  //       where: { userName: loginInfo.userName },
-  //     });
-
-  //     if (user && user.password === loginInfo.password) {
-  //       const payload = { userName: user.userName, sub: user.password };
-
-  //       return {
-  //         access_token: this.jwtService.sign(payload),
-  //       };
-  //     }
-
-  //     return { msg: 'userName or password is wrong!!!' };
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-  // async validateUser(userName: string, pass: string): Promise<any> {
-  //   try {
-  //     const user = await this.userRepository.findOne({
-  //       where: { userName },
-  //     });
-
-  //     if (user && user.password === pass) {
-  //       return user;
-  //     }
-  //     return null;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 }

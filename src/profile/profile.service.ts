@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatBookDto } from './creat-book.dto';
 import { Book } from './book.entity';
-import { Repository } from 'typeorm';
+import { Any, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -11,32 +11,39 @@ export class ProfileService {
     private bookRepository: Repository<Book>,
   ) {}
 
-  async addBook(bookInfo: CreatBookDto) {
+  async addBook(bookInfo: CreatBookDto, user_id: number) {
     try {
-      const user = await this.bookRepository.save(bookInfo);
-      if (user) {
+      const book =  this.bookRepository.create(bookInfo);
+
+      book.user_id = user_id;
+      await this.bookRepository.save(book);
+
+      if (book) {
         return { msg: 'book created successfully' };
       }
     } catch (error) {
-      throw error;
+      throw error; 
     }
   }
 
-  async findAll() {
+  async findAll(user_id: number) {
     try {
-      const users = await this.bookRepository.find({});
-      return users;
+      const books = await this.bookRepository.find({ where: { user_id } });
+      return books;
     } catch (error) {
       throw error;
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, user_id: number) {
     try {
       const Id = Number(id);
       const book = await this.bookRepository.findOneBy({ id: Id });
       if (!book) {
         return { msg: 'book with this id does not found' };
+      }
+      if (book.user_id !== user_id) {
+        return { msg: 'access denied' };
       }
       return book;
     } catch (error) {
@@ -44,12 +51,16 @@ export class ProfileService {
     }
   }
 
- 
-  async updateBook(newInfo: CreatBookDto, id: string) {
+  async updateBook(newInfo: CreatBookDto, id: string, user_id: number) {
     try {
       const Id = Number(id);
-      const updatedUser = await this.bookRepository.update(id, newInfo);
-      if (updatedUser.affected == 0) {
+      const book = await this.bookRepository.findOne({ where: { id: Id } });
+      if (book.user_id !== user_id) {
+        return { msg: 'access denied' };
+      }
+      const updatedBook = await this.bookRepository.update(id, newInfo);
+
+      if (updatedBook.affected == 0) {
         return { msg: 'something is wrong!!! we can not update book...' };
       }
       return { msg: 'book updated successfully' };
@@ -58,14 +69,30 @@ export class ProfileService {
     }
   }
 
-  
-  async deleteBook(id: string) {
+  async deleteBook(id: string, user_id: number) {
     try {
+      const Id = Number(id);
+      const book = await this.bookRepository.findOne({ where: { id: Id } });
+      if (book.user_id !== user_id) {
+        return { msg: 'access denied' };
+      }
       const result = await this.bookRepository.delete(id);
       if (result.affected == 0) {
         return { msg: 'something is wrong!!! book does not deleted...' };
       }
       return { msg: 'book deleted successfully' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteAllBook(user_id: number) {
+    try {
+      const result = await this.bookRepository.delete({ user_id });
+      if (result.affected == 0) {
+        return { msg: 'something is wrong!!! book does not deleted...' };
+      }
+      return { msg: 'all books deleted successfully' };
     } catch (error) {
       throw error;
     }

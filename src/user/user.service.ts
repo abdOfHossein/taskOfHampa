@@ -3,6 +3,7 @@ import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsUtils, Repository } from 'typeorm';
 import { CreateUserDto } from './createUserDto';
+import { Book } from 'src/profile/book.entity';
 
 interface IUserInfo {
   firstName: string;
@@ -39,7 +40,7 @@ export class UserService {
   //read all user
   async findAll() {
     try {
-      const users = await this.userRepository.find({});
+      const users = await this.userRepository.find({ relations: ['books'] });
       return users;
     } catch (error) {
       throw error;
@@ -77,11 +78,39 @@ export class UserService {
   //delete user
   async deleteUser(id: string) {
     try {
-      const result = await this.userRepository.delete(id);
+      const Id = Number(id);
+      const user: any = await this.userRepository.findBy({ id: Id });
+      // const book = await this.bookRepository.find({
+      //   where: { userId: user.id },
+      // });
+      // if (book) {
+      //   const result = await this.bookRepository.delete({ userId: user.id });
+      //   if (result.affected == 0) {
+      //     return {
+      //       msg: 'something is wrong!!! book of user does not deleted...',
+      //     };
+      //   }
+      // }
+
+      const result: any = await this.userRepository.delete(id);
       if (result.affected == 0) {
         return { msg: 'something is wrong!!! user does not deleted...' };
       }
-      return { msg: 'user deleted successfully' };
+
+      return { msg: 'user and his books deleted successfully' };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteAllUser() {
+    try {
+      const result: any = await this.userRepository.delete({});
+      if (result.affected == 0) {
+        return { msg: 'something is wrong!!! user does not deleted...' };
+      }
+
+      return { msg: 'all user deleted successfully' };
     } catch (error) {
       throw error;
     }

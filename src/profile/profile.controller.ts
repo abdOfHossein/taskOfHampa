@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Res,
+  Request,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreatBookDto } from './creat-book.dto';
@@ -16,17 +17,26 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 
-@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @ApiTags('profile===>Crud book')
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Post()
-  async addBook(@Body() bookInfo: CreatBookDto): Promise<object> {
+  async addBook(
+    @Body() bookInfo: CreatBookDto,
+    @Request() req,
+  ): Promise<object> {
     try {
-      const result = await this.profileService.addBook(bookInfo);
+      const user_id =await req.user.user_id;
+      console.log(`req.user in addBook is===>${req.user}`);
+      console.log(`user_id in addBook is===>${user_id}`);
+
+      const result = await this.profileService.addBook(bookInfo, user_id);
+      console.log(result);
+
       return result;
     } catch (error) {
       throw error;
@@ -34,13 +44,19 @@ export class ProfileController {
   }
 
   @Get('all')
-  async findAll(@Res() res: Response): Promise<Book[] | object> {
+  async findAll(
+    @Res() res: Response,
+    @Request() req,
+  ): Promise<Book[] | object> {
     try {
-      const result = await this.profileService.findAll();
-      console.log(result);
+      const user_id = req.user.user_id;
+      console.log(`req.user in findAll is===>${req.user}`);
+      console.log(`user_id in findAll is===>${user_id}`);
+
+      const result = await this.profileService.findAll(user_id);
 
       if (result.length === 0) {
-        return res.json({ msg: 'there is not any user...!' });
+        return res.json({ msg: 'there is not any book...!' });
       }
       res.json({ result });
       return;
@@ -50,23 +66,28 @@ export class ProfileController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Book | object> {
+  async findOne(
+    @Param('id') id: string,
+    @Request() req,
+  ): Promise<Book | object> {
     try {
-      const result = await this.profileService.findOne(id);
+      const user_id = req.user.user_id;
+      const result = await this.profileService.findOne(id, user_id);
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-
   @Put(':id')
   async updateBook(
     @Body() newInfo: CreatBookDto,
     @Param('id') id: string,
+    @Request() req,
   ): Promise<object> {
     try {
-      const result = await this.profileService.updateBook(newInfo, id);
+      const user_id = req.user.user_id;
+      const result = await this.profileService.updateBook(newInfo, id, user_id);
       return result;
     } catch (error) {
       throw error;
@@ -74,9 +95,21 @@ export class ProfileController {
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<object> {
+  async deleteBook(@Param('id') id: string, @Request() req): Promise<object> {
     try {
-      const result = await this.profileService.deleteBook(id);
+      const user_id = req.user.user_id;
+      const result = await this.profileService.deleteBook(id, user_id);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete()
+  async deleteAllBook(@Request() req): Promise<object> {
+    try {
+      const user_id = req.user.user_id;
+      const result = await this.profileService.deleteAllBook(user_id);
       return result;
     } catch (error) {
       throw error;

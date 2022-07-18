@@ -11,6 +11,8 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileModule } from './profile/profile.module';
+import { LocalStrategy } from './auth/local.strategy';
+import { Book } from './profile/book.entity';
 
 const config = require('dotenv').config(join(__dirname, '../.env'));
 const port = Number(process.env.DB_PORT);
@@ -21,10 +23,10 @@ const secret = process.env.JWT_SECRET_KEY;
 @Module({
   imports: [
     AuthModule,
-    PassportModule.register({defaultStrategy: 'jwt'}),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '360s' },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -35,14 +37,14 @@ const secret = process.env.JWT_SECRET_KEY;
       database: 'user&task',
       entities: [__dirname + '/../**/*.entity.js'],
       synchronize: true,
-      logging: false,
+      logging: true,
+      autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Book]),
     UserModule,
     ProfileModule,
-
   ],
   controllers: [AppController],
-  providers: [AppService, JwtStrategy],
+  providers: [AppService, LocalStrategy, JwtStrategy],
 })
 export class AppModule {}

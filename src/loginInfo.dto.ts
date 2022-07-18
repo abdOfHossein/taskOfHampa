@@ -6,7 +6,7 @@ export class LoginInfoDto {
     description: 'enter your userName',
     example: 'behzad',
   })
-  userName: string;
+  username: string;
   @ApiProperty({
     description: 'enter your password',
     example: '123654',

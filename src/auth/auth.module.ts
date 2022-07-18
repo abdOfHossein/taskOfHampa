@@ -17,12 +17,12 @@ const secret = process.env.JWT_SECRET_KEY;
     PassportModule,
     JwtModule.register({
       secret,
-      signOptions: { expiresIn: '360s' },
+      signOptions: { expiresIn: '60s' },
     }),
     TypeOrmModule.forFeature([User]),
-    UserModule
+    UserModule,
   ],
-  providers: [AuthService, LocalStrategy,JwtStrategy],
-  exports: [AuthService]
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

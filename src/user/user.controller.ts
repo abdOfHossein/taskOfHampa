@@ -81,4 +81,15 @@ export class UserController {
       throw error;
     }
   }
+
+   //delete all user
+   @Delete()
+   async deleteAllUser(): Promise<object> {
+     try {
+       const result = await this.userService.deleteAllUser();
+       return result;
+     } catch (error) {
+       throw error;
+     }
+   }
 }

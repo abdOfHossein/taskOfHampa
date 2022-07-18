@@ -1,22 +1,28 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Book } from '../profile/book.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable:true})
+  @Column()
   userName: string;
 
-  @Column({nullable:true})
+  @Column()
   password: string;
 
-  @Column({nullable:true})
+  @Column()
   firstName: string;
 
-  @Column({nullable:true})
+  @Column()
   lastName: string;
 
-  @Column({nullable:true})
+  @Column()
   phoneNumber: string;
+
+  @OneToMany((type) => Book, (book) => book.user, {
+    eager: true,
+  })
+  books: Book[];
 }

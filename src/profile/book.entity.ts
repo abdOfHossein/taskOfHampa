@@ -1,16 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { type, userInfo } from 'os';
+import { User } from '../user/user.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  TableForeignKey,
+  JoinColumn,
+  Relation,
+} from 'typeorm';
 
 @Entity()
 export class Book {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({nullable:true})
+  @Column()
   title: string;
 
-  @Column({nullable:true})
+  @Column()
   text: string;
 
-  @Column({nullable:true})
+  @Column()
   author: string;
+
+  @Column()
+  user_id: number;
+
+  @ManyToOne((type) => User, (user) => user.books, {
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }
