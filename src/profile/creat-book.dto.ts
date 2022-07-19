@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class CreatBookDto {
+  
   @ApiProperty({
     description: 'enter your title',
     example: 'myBook',
@@ -22,7 +23,6 @@ export class CreatBookDto {
     description: 'enter your author',
     example: 'behzad',
   })
-  
   @MinLength(3)
   @MaxLength(12)
   @IsNotEmpty()

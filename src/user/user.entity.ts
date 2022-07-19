@@ -21,6 +21,6 @@ export class User {
   @Column()
   phoneNumber: string;
 
-  @OneToMany(() => Book, (book) => book.user )
+  @OneToMany(() => Book, (book) => book.user, { cascade: true })
   books: Book[];
 }

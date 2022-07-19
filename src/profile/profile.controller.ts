@@ -20,7 +20,7 @@ import { Response } from 'express';
 @UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 @ApiTags('profile===>Crud book')
-@Controller('profile')
+@Controller('book')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
@@ -30,10 +30,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<object> {
     try {
-      console.log(req.user);
-
       const result = await this.profileService.addBook(bookInfo, req.user.id);
-      console.log(result);
 
       return result;
     } catch (error) {
@@ -65,7 +62,6 @@ export class ProfileController {
     @Request() req,
   ): Promise<Book | object> {
     try {
-     
       const result = await this.profileService.findOne(id, req.user.id);
       return result;
     } catch (error) {
@@ -80,7 +76,11 @@ export class ProfileController {
     @Request() req,
   ): Promise<object> {
     try {
-      const result = await this.profileService.updateBook(newInfo, id, req.user.id);
+      const result = await this.profileService.updateBook(
+        newInfo,
+        id,
+        req.user.id,
+      );
       return result;
     } catch (error) {
       throw error;
@@ -90,7 +90,7 @@ export class ProfileController {
   @Delete(':id')
   async deleteBook(@Param('id') id: string, @Request() req): Promise<object> {
     try {
-      const result = await this.profileService.deleteBook(id,req.user.id);
+      const result = await this.profileService.deleteBook(id, req.user.id);
       return result;
     } catch (error) {
       throw error;

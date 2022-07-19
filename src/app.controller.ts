@@ -5,9 +5,6 @@ import { CreateUserDto } from './user/createUserDto';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { LoginInfoDto } from './loginInfo.dto';
-import { AuthGuard } from '@nestjs/passport';
-
-console.log('hello');
 
 @ApiTags('loginAndRegisterUser')
 @Controller()
@@ -29,7 +26,7 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req,@Body() userInfo: LoginInfoDto): Promise<object> {
+  async login(@Request() req, @Body() userInfo: LoginInfoDto): Promise<object> {
     try {
       return this.authService.login(req.user);
     } catch (error) {

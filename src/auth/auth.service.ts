@@ -5,11 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 
-class LoginInfoDto {
-  userName: string;
-  password: string;
-}
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -22,9 +17,9 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     try {
       const user: any = await this.userRepository.findOne({
-        where: { userName:username },
+        where: { userName: username },
       });
-     
+
       if (user && user.password == password) {
         return user;
       }
@@ -40,4 +35,4 @@ export class AuthService {
       access_token: this.jwtService.sign(payload),
     };
   }
-} 
+}

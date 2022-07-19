@@ -4,18 +4,11 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './user/createUserDto';
 
-
-class LoginInfoDto {
-  userName: string;
-  password: string;
-}
-
-@Injectable() 
+@Injectable()
 export class AppService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-
   ) {}
 
   async register(userInfo: CreateUserDto) {
@@ -38,5 +31,4 @@ export class AppService {
       throw error;
     }
   }
-
 }

@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { UserService } from './user/user.service';
 import { User } from './user/user.entity';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
@@ -40,18 +39,6 @@ const secret = process.env.JWT_SECRET_KEY;
       logging: true,
       autoLoadEntities: true,
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mysql',
-    //   host: 'localhost',
-    //   port,
-    //   username,
-    //   password,
-    //   database: 'user&task',
-    //   entities: [__dirname + '/../**/*.entity.js'],
-    //   synchronize: true,
-    //   logging: true,
-    //   autoLoadEntities: true,
-    // }),
     TypeOrmModule.forFeature([User, Book]),
     UserModule,
     ProfileModule,

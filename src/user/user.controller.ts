@@ -19,7 +19,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  //creat user
   @Post()
   async addUser(@Body() userInfo: CreateUserDto): Promise<object> {
     try {
@@ -30,13 +29,10 @@ export class UserController {
     }
   }
 
-  //readl all user
   @Get('all')
   async findAll(@Res() res: Response): Promise<User[] | object> {
     try {
       const result = await this.userService.findAll();
-      console.log(result);
-
       if (result.length === 0) {
         return res.json({ msg: 'there is not any user...!' });
       }
@@ -47,7 +43,6 @@ export class UserController {
     }
   }
 
-  //read one user
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User | object> {
     try {
@@ -58,7 +53,6 @@ export class UserController {
     }
   }
 
-  //update user
   @Put(':id')
   async updateUser(
     @Body() newInfo: CreateUserDto,
@@ -71,7 +65,7 @@ export class UserController {
       throw error;
     }
   }
-  //delete user
+
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<object> {
     try {
@@ -82,14 +76,13 @@ export class UserController {
     }
   }
 
-   //delete all user
-   @Delete()
-   async deleteAllUser(): Promise<object> {
-     try {
-       const result = await this.userService.deleteAllUser();
-       return result;
-     } catch (error) {
-       throw error;
-     }
-   }
+  @Delete()
+  async deleteAllUser(): Promise<object> {
+    try {
+      const result = await this.userService.deleteAllUser();
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

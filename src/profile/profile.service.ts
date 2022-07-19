@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatBookDto } from './creat-book.dto';
 import { Book } from './book.entity';
-import { Any, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from '../user/user.service';
 
@@ -15,10 +15,9 @@ export class ProfileService {
 
   async addBook(bookInfo: CreatBookDto, id: string) {
     try {
-      const user:any = await this.userService.findOne(id);
-      console.log(user);
+      const user: any = await this.userService.findOne(id);
       const book = this.bookRepository.create(bookInfo);
-      book.user=user;
+      book.user = user;
       await this.bookRepository.save(book);
       if (book) {
         return { msg: 'book created successfully' };
