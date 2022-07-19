@@ -7,7 +7,7 @@ import { AuthService } from './auth/auth.service';
 import { LoginInfoDto } from './loginInfo.dto';
 import { AuthGuard } from '@nestjs/passport';
 
-console.log('hi');
+console.log('hello');
 
 @ApiTags('loginAndRegisterUser')
 @Controller()

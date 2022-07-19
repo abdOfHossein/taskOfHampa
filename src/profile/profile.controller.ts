@@ -30,11 +30,9 @@ export class ProfileController {
     @Request() req,
   ): Promise<object> {
     try {
-      const user_id =await req.user.user_id;
-      console.log(`req.user in addBook is===>${req.user}`);
-      console.log(`user_id in addBook is===>${user_id}`);
+      console.log(req.user);
 
-      const result = await this.profileService.addBook(bookInfo, user_id);
+      const result = await this.profileService.addBook(bookInfo, req.user.id);
       console.log(result);
 
       return result;
@@ -49,11 +47,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<Book[] | object> {
     try {
-      const user_id = req.user.user_id;
-      console.log(`req.user in findAll is===>${req.user}`);
-      console.log(`user_id in findAll is===>${user_id}`);
-
-      const result = await this.profileService.findAll(user_id);
+      const result = await this.profileService.findAll(req.user.id);
 
       if (result.length === 0) {
         return res.json({ msg: 'there is not any book...!' });
@@ -71,8 +65,8 @@ export class ProfileController {
     @Request() req,
   ): Promise<Book | object> {
     try {
-      const user_id = req.user.user_id;
-      const result = await this.profileService.findOne(id, user_id);
+     
+      const result = await this.profileService.findOne(id, req.user.id);
       return result;
     } catch (error) {
       throw error;
@@ -86,8 +80,7 @@ export class ProfileController {
     @Request() req,
   ): Promise<object> {
     try {
-      const user_id = req.user.user_id;
-      const result = await this.profileService.updateBook(newInfo, id, user_id);
+      const result = await this.profileService.updateBook(newInfo, id, req.user.id);
       return result;
     } catch (error) {
       throw error;
@@ -97,8 +90,7 @@ export class ProfileController {
   @Delete(':id')
   async deleteBook(@Param('id') id: string, @Request() req): Promise<object> {
     try {
-      const user_id = req.user.user_id;
-      const result = await this.profileService.deleteBook(id, user_id);
+      const result = await this.profileService.deleteBook(id,req.user.id);
       return result;
     } catch (error) {
       throw error;
@@ -108,8 +100,7 @@ export class ProfileController {
   @Delete()
   async deleteAllBook(@Request() req): Promise<object> {
     try {
-      const user_id = req.user.user_id;
-      const result = await this.profileService.deleteAllBook(user_id);
+      const result = await this.profileService.deleteAllBook(req.user.id);
       return result;
     } catch (error) {
       throw error;

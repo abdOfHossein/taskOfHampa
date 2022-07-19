@@ -3,26 +3,28 @@ import { CreatBookDto } from './creat-book.dto';
 import { Book } from './book.entity';
 import { Any, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Book)
     private bookRepository: Repository<Book>,
+    private userService: UserService,
   ) {}
 
-  async addBook(bookInfo: CreatBookDto, user_id: number) {
+  async addBook(bookInfo: CreatBookDto, id: string) {
     try {
-      const book =  this.bookRepository.create(bookInfo);
-
-      book.user_id = user_id;
+      const user:any = await this.userService.findOne(id);
+      console.log(user);
+      const book = this.bookRepository.create(bookInfo);
+      book.user=user;
       await this.bookRepository.save(book);
-
       if (book) {
         return { msg: 'book created successfully' };
       }
     } catch (error) {
-      throw error; 
+      throw error;
     }
   }
 
@@ -42,7 +44,7 @@ export class ProfileService {
       if (!book) {
         return { msg: 'book with this id does not found' };
       }
-      if (book.user_id !== user_id) {
+      if (book.user_id != user_id) {
         return { msg: 'access denied' };
       }
       return book;
